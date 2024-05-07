@@ -82,4 +82,28 @@ mod tests {
         metrics.dec("test");
         println!("{:?}", metrics.snapshot());
     }
+
+    #[test]
+    fn test_metrics_thread_worker() {
+        let metrics = Metrics::new();
+        println!("metrics: {:?}", metrics.snapshot());
+        for i in 0..4 {
+            let clone = metrics.clone();
+            thread::Builder::new()
+                .name(format!("{}", format_args!("worker-{}", i)))
+                .spawn(move || {
+                    for _ in 0..100 {
+                        clone.inc("test");
+                        println!(
+                            "{:?},value: {:?}",
+                            thread::current().name().unwrap(),
+                            clone.get("test").unwrap()
+                        )
+                    }
+                })
+                .expect("thread spawn fail");
+        }
+        thread::sleep(Duration::from_secs(1));
+        println!("metrics: {:?}", metrics.snapshot());
+    }
 }
