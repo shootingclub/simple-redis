@@ -35,11 +35,12 @@ fn main() -> Result<()> {
         for msg in rx {
             println!("thread-{:?}, value: {:?}", msg.ids, msg.value);
         }
+        52
     });
 
-    consumer.join().expect("consumer thread join fail");
+    let secret = consumer.join().expect("consumer thread join fail");
 
-    println!("main thread exit");
+    println!("main thread exit {:?}", secret);
     Ok(())
 }
 
