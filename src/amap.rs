@@ -3,6 +3,7 @@ use std::fmt::Display;
 use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::Arc;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 struct AmapMetrics {
     pub data: Arc<HashMap<String, AtomicI64>>,
