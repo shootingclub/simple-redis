@@ -1,3 +1,9 @@
-# Geektime Rust 语言训练营第二周：simple-redis
+##  Arc<HashMap<String, AtomicI64>>不支持写入数据
 
-一个简单的 redis server 实现 。
+>`Arc<HashMap<String, AtomicI64>>` 在 Rust 中不支持直接写入数据，是因为 `Arc` (Atomic Reference Count) 本身是一个只读的智能指针。它提供了对内部数据的原子引用计数，确保了数据的线程安全，但它并不提供写锁机制来允许多个线程同时写入数据。
+>
+>为了在 `Arc` 中实现读写操作，你需要使用额外的同步原语，比如 `Mutex` 或 `RwLock`。这些原语能够提供互斥或读写锁，从而允许对数据进行安全的并发访问。例如，`RwLock` 提供了两种锁：读锁和写锁。读锁可以被多个读者持有，而写锁则保证了只有一个写者可以访问数据。
+>
+>如果你尝试直接对 `Arc<HashMap<String, AtomicI64>>` 进行写入操作，你会发现这是不可能的，因为 `Arc` 本身并不提供这样的功能。你需要将 `Arc` 包裹在一个支持写入的同步原语中，如 `Arc<RwLock<HashMap<String, AtomicI64>>>`，然后通过这个原语来实现对数据的并发读写。
+>
+>总结来说，`Arc` 是用于共享只读数据的结构，要实现对 `Arc` 中的 `HashMap` 进行写入操作，你需要使用 `RwLock` 或其他同步机制来提供写锁功能。这样，你就可以安全地在多个线程之间共享和修改数据了
