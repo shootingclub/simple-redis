@@ -80,3 +80,6 @@ mod tests {
         println!("metrics: {:?}", metrics._snapshot());
     }
 }
+
+#[allow(dead_code)]
+fn main() {}

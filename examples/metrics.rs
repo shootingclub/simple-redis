@@ -1,5 +1,6 @@
 use dashmap::DashMap;
 use rand::Rng;
+use simple_redis::{M, N};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::thread;
@@ -154,5 +155,20 @@ mod tests {
             .map(|v| (v.0.to_string(), *v.1))
             .collect::<Vec<(String, i64)>>();
         println!("{:?}", hmm_array)
+    }
+}
+
+fn main() {
+    let metrics = Metrics::new();
+    println!("{:?}", metrics.snapshot());
+    for idx in 0..N {
+        task_worker(idx, metrics.clone());
+    }
+    for _ in 0..M {
+        request_worker(metrics.clone());
+    }
+    loop {
+        thread::sleep(Duration::from_secs(2));
+        println!("{:?}", metrics.snapshot());
     }
 }

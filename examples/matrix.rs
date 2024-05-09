@@ -1,6 +1,8 @@
 use std::fmt;
 use std::ops::{Add, AddAssign, Mul};
 
+mod amap;
+
 struct Matrix<T> {
     data: Vec<T>,
     rows: usize,
